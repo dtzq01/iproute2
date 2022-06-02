@@ -1452,15 +1452,15 @@ static int flower_parse_opt(struct filter_util *qu, char *handle,
 	while (argc > 0) {
 		if (matches(*argv, "classid") == 0 ||
 		    matches(*argv, "flowid") == 0) {
-			unsigned int handle;
+			unsigned int classid;
 
 			NEXT_ARG();
-			ret = get_tc_classid(&handle, *argv);
+			ret = get_tc_classid(&classid, *argv);
 			if (ret) {
 				fprintf(stderr, "Illegal \"classid\"\n");
 				return -1;
 			}
-			addattr_l(n, MAX_MSG, TCA_FLOWER_CLASSID, &handle, 4);
+			addattr_l(n, MAX_MSG, TCA_FLOWER_CLASSID, &classid, 4);
 		} else if (matches(*argv, "hw_tc") == 0) {
 			unsigned int handle;
 			__u32 tc;

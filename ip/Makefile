@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0
-IPOBJ=ip.o ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
+IPCOMMON=ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
     rtm_map.o iptunnel.o ip6tunnel.o tunnel.o ipneigh.o ipntable.o iplink.o \
     ipmaddr.o ipmonitor.o ipmroute.o ipprefix.o iptuntap.o iptoken.o \
     ipxfrm.o xfrm_state.o xfrm_policy.o xfrm_monitor.o iplink_dummy.o \
@@ -14,22 +14,33 @@ IPOBJ=ip.o ipaddress.o ipaddrlabel.o iproute.o iprule.o ipnetns.o \
     ipnexthop.o ipmptcp.o iplink_bareudp.o iplink_wwan.o ipioam6.o \
     iplink_amt.o iplink_batadv.o iplink_gtp.o iplink_virt_wifi.o \
     ipstats.o
-
+IPOBJ=ip.o 
+LIB_IP=iprt2_ip.o
+IPOBJ += $(IPCOMMON)
+LIB_IP += $(IPCOMMON)
 RTMONOBJ=rtmon.o
 
 include ../config.mk
 
+CFLAGS += -fpic
+
 ALLOBJ=$(IPOBJ) $(RTMONOBJ)
 SCRIPTS=routel
-TARGETS=ip rtmon
+TARGETS=ip rtmon libiprt2_ip.so
 
-all: $(TARGETS) $(SCRIPTS)
+all: $(TARGETS) $(SCRIPTS) iprt2_ip_test
 
 ip: $(IPOBJ) $(LIBNETLINK)
-	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(QUIET_LINK)$(CC) $^ $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
 
 rtmon: $(RTMONOBJ)
-	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
+	$(QUIET_LINK)$(CC) $^ $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
+
+iprt2_ip_test: iprt2_ip_test.o $(LIBNETLINK) libiprt2_ip.so 
+	$(QUIET_LINK)$(CC) $(CFLAGS) $^  $(LDFLAGS) $(LDLIBS) -liprt2_ip -o $@
+
+libiprt2_ip.so: $(LIB_IP) $(LIBNETLINK)
+	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ -o $@
 
 install: all
 	install -m 0755 $(TARGETS) $(DESTDIR)$(SBINDIR)

@@ -356,7 +356,8 @@ int tc_cmd_helper(char *cmd, unsigned int cmd_len)
 	tc_core_init();
 	if (rtnl_open(&rth, 0) < 0) {
 		fprintf(stderr, "Cannot open rtnetlink\n");
-		exit(1);
+		ret = -1;
+		goto Exit;
 	}
 	if (use_names && cls_names_init(conf_file)) {
 		ret = -1;

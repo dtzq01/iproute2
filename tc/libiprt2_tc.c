@@ -251,22 +251,7 @@ static int batch(const char *name)
 
 int tc_cmd_helper(char *cmd, unsigned int cmd_len)
 {
-	if (cmd_len >= MAX_CMD_LEN)
-		return E2BIG;
-
-	char *argv1[MAX_PARAM_NUM] = {};
-	char **argv = argv1;
-	const char *delimiters = " ";
-	int i = 0;
-	char tmp[MAX_CMD_LEN] = {};
-	memcpy(tmp, cmd, cmd_len);
-	argv1[i] = strtok(tmp, delimiters);
-	for (i = 1; i < MAX_PARAM_NUM; i++) {
-		argv1[i] = strtok(NULL, delimiters);
-		if (NULL == argv1[i])
-			break;
-	}
-	int argc = i;
+	libiprt2_main_2_cmdhelper();
 
 	const char *libbpf_version;
 	char *batch_file = NULL;

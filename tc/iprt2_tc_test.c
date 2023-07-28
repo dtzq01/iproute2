@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 	}
 	gettimeofday(&end_tv, NULL);
 	timersub(&end_tv, &begin_tv, &diff_tv);
-	printf("%d times: cost %ld.%ld s\n", TEST_TIMES * ARRAY_SIZE(input), diff_tv.tv_sec,
+	printf("%ld times: cost %ld.%ld s\n", TEST_TIMES * ARRAY_SIZE(input), diff_tv.tv_sec,
 	       diff_tv.tv_usec);
 	return 0;
 }

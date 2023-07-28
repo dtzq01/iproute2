@@ -3,3 +3,4 @@
 *.output
 *.tab.h
 tc
+iprt2_tc_test

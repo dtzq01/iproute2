@@ -1,7 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0
-TCOBJ= tc.o tc_qdisc.o tc_class.o tc_filter.o tc_util.o tc_monitor.o \
+TC_COMMON=tc_qdisc.o tc_class.o tc_filter.o tc_util.o tc_monitor.o \
        tc_exec.o m_police.o m_estimator.o m_action.o m_ematch.o \
        emp_ematch.tab.o emp_ematch.lex.o
+TCOBJ= tc.o 
+LIB_TC_OBJ= libiprt2_tc.o
+
+TCOBJ += $(TC_COMMON)
+LIB_TC_OBJ += $(TC_COMMON)
 
 include ../config.mk
 
@@ -109,6 +114,7 @@ ifneq ($(TC_CONFIG_NO_XT),y)
 endif
 
 TCOBJ += $(TCMODULES)
+LIB_TC_OBJ += $(TCMODULES)
 LDLIBS += -L. -lm
 
 ifeq ($(SHARED_LIBS),y)
@@ -129,7 +135,7 @@ ifneq ($(IPT_LIB_DIR),)
 endif
 
 LEX := flex
-CFLAGS += -DYY_NO_INPUT
+CFLAGS += -DYY_NO_INPUT -fpic
 
 MODDESTDIR := $(DESTDIR)$(LIBDIR)/tc
 
@@ -137,10 +143,16 @@ MODDESTDIR := $(DESTDIR)$(LIBDIR)/tc
 	$(QUIET_CC)$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -shared -fpic $< -o $@
 
 
-all: tc $(TCSO)
+all: tc $(TCSO) libiprt2_tc.so iprt2_tc_test
 
-tc: $(TCOBJ) $(LIBNETLINK) libtc.a
+tc: $(TCOBJ) $(LIBNETLINK) libtc.a libtc_test.a
 	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
+
+iprt2_tc_test: iprt2_tc_test.o $(LIBNETLINK) libiprt2_tc.so 
+	$(QUIET_LINK)$(CC) $(CFLAGS) $^  $(LDFLAGS) $(LDLIBS) -liprt2_tc -o $@
+
+libiprt2_tc.so: $(LIB_TC_OBJ) $(TCLIB)
+	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ -o $@
 
 libtc.a: $(TCLIB)
 	$(QUIET_AR)$(AR) rcs $@ $^
@@ -161,6 +173,7 @@ install: all
 
 clean:
 	rm -f $(TCOBJ) $(TCLIB) libtc.a tc *.so emp_ematch.tab.h; \
+	rm -f libiprt2_tc_test $(LIB_TC_OBJ) 
 	rm -f emp_ematch.tab.*
 
 q_atm.so: q_atm.c

@@ -35,7 +35,7 @@ test result:
 #define TEST_TIMES 4000
 int main(int argc, char **argv)
 {
-	char input[][256] = {
+	char input[][MAX_CMD_LEN] = {
 		"tc qdisc del dev lo root",
 		"tc qdisc add dev lo root handle 1: htb",
 		"tc class add dev lo parent 1:0 classid 1:1 htb rate 20mbit ceil 20mbit burst 2mb cburst 2mb",

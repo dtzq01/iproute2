@@ -20,15 +20,16 @@ IPOBJ += $(IPCOMMON)
 LIB_IP += $(IPCOMMON)
 RTMONOBJ=rtmon.o
 
+
 include ../config.mk
 
 CFLAGS += -fpic
 
 ALLOBJ=$(IPOBJ) $(RTMONOBJ)
 SCRIPTS=routel
-TARGETS=ip rtmon libiprt2_ip.so
+TARGETS=ip rtmon iprt2_ip_test 
 
-all: $(TARGETS) $(SCRIPTS) iprt2_ip_test
+all: $(TARGETS) $(SCRIPTS)
 
 ip: $(IPOBJ) $(LIBNETLINK)
 	$(QUIET_LINK)$(CC) $^ $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
@@ -37,7 +38,7 @@ rtmon: $(RTMONOBJ)
 	$(QUIET_LINK)$(CC) $^ $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
 
 iprt2_ip_test: iprt2_ip_test.o $(LIBNETLINK) libiprt2_ip.so 
-	$(QUIET_LINK)$(CC) $(CFLAGS) $^  $(LDFLAGS) $(LDLIBS) -liprt2_ip -o $@
+	$(QUIET_LINK)$(CC) $(CFLAGS) $^  $(LDFLAGS) $(LDLIBS) -liprt2_ip -L$(PWD)/ip -o $@
 
 libiprt2_ip.so: $(LIB_IP) $(LIBNETLINK)
 	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ -o $@
@@ -45,7 +46,7 @@ libiprt2_ip.so: $(LIB_IP) $(LIBNETLINK)
 install: all
 	install -m 0755 $(TARGETS) $(DESTDIR)$(SBINDIR)
 	install -m 0755 $(SCRIPTS) $(DESTDIR)$(SBINDIR)
-
+	install -m 0644  libiprt2_ip.so $(LIBDIR)
 clean:
 	rm -f $(ALLOBJ) $(TARGETS)
 
@@ -53,7 +54,7 @@ SHARED_LIBS ?= y
 ifeq ($(SHARED_LIBS),y)
 
 LDLIBS += -ldl
-LDFLAGS += -Wl,-export-dynamic
+LDFLAGS += -Wl,-export-dynamic,--rpath=../lib
 
 else
 

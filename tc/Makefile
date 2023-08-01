@@ -119,7 +119,7 @@ LDLIBS += -L. -lm
 
 ifeq ($(SHARED_LIBS),y)
 LDLIBS += -ldl
-LDFLAGS += -Wl,-export-dynamic
+LDFLAGS += -Wl,-export-dynamic,--rpath=../lib
 endif
 
 TCLIB := tc_core.o
@@ -149,7 +149,7 @@ tc: $(TCOBJ) $(LIBNETLINK) libtc.a libtc_test.a
 	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 iprt2_tc_test: iprt2_tc_test.o $(LIBNETLINK) libiprt2_tc.so 
-	$(QUIET_LINK)$(CC) $(CFLAGS) $^  $(LDFLAGS) $(LDLIBS) -liprt2_tc -o $@
+	$(QUIET_LINK)$(CC) $(CFLAGS) $^  $(LDFLAGS) $(LDLIBS) -liprt2_tc -L$(PWD)/tc -o $@
 
 libiprt2_tc.so: $(LIB_TC_OBJ) $(TCLIB)
 	$(QUIET_CC)$(CC) $(CFLAGS) $(LDFLAGS) -shared $^ -o $@
@@ -160,6 +160,8 @@ libtc.a: $(TCLIB)
 install: all
 	mkdir -p $(MODDESTDIR)
 	install -m 0755 tc $(DESTDIR)$(SBINDIR)
+	install -m 0755 iprt2_tc_test $(DESTDIR)$(SBINDIR)
+	install -m 0644 libiprt2_tc.so $(LIBDIR)
 	for i in $(TCSO); \
 	do install -m 755 $$i $(MODDESTDIR); \
 	done

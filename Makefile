@@ -101,6 +101,7 @@ config.mk:
 	fi
 
 install: all
+	mkdir -p $(LIBDIR)
 	install -m 0755 -d $(DESTDIR)$(SBINDIR)
 	install -m 0755 -d $(DESTDIR)$(CONF_USR_DIR)
 	install -m 0755 -d $(DESTDIR)$(ARPDDIR)

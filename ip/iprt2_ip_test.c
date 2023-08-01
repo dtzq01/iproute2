@@ -52,45 +52,45 @@ int main(int argc, char **argv)
 		"ip addr add 192.168.11.3/24 dev ens36.11"
 	};
 
-	char input2[][MAX_CMD_LEN] = {
-		"ip route del 192.168.1.1/32 dev ens36",
-		"ip route del 192.168.1.2/32 dev ens36",
-		"ip route del 192.168.1.3/32 dev ens36",
-		"ip route del 192.168.1.4/32 dev ens36",
-		"ip route del 192.168.1.5/32 dev ens36",
-		"ip route del 192.168.1.6/32 dev ens36",
-		"ip route del 192.168.1.7/32 dev ens36",
-		"ip route del 192.168.1.8/32 dev ens36",
-		"ip route del 192.168.1.9/32 dev ens36",
-		"ip route del 192.168.1.10/32 dev ens36",
-		"ip route del 192.168.1.11/32 dev ens36",
-		"ip route del 192.168.1.12/32 dev ens36",
-		"ip route add 192.168.1.1/32 dev ens36",
-		"ip route add 192.168.1.2/32 dev ens36",
-		"ip route add 192.168.1.3/32 dev ens36",
-		"ip route add 192.168.1.4/32 dev ens36",
-		"ip route add 192.168.1.5/32 dev ens36",
-		"ip route add 192.168.1.6/32 dev ens36",
-		"ip route add 192.168.1.7/32 dev ens36",
-		"ip route add 192.168.1.8/32 dev ens36",
-		"ip route add 192.168.1.9/32 dev ens36",
-		"ip route add 192.168.1.10/32 dev ens36",
-		"ip route add 192.168.1.11/32 dev ens36",
-		"ip route add 192.168.1.12/32 dev ens36",
-	};
-    int cmd_num = ARRAY_SIZE(input1);
+	// char input2[][MAX_CMD_LEN] = {
+	// 	"ip route del 192.168.1.1/32 dev ens36",
+	// 	"ip route del 192.168.1.2/32 dev ens36",
+	// 	"ip route del 192.168.1.3/32 dev ens36",
+	// 	"ip route del 192.168.1.4/32 dev ens36",
+	// 	"ip route del 192.168.1.5/32 dev ens36",
+	// 	"ip route del 192.168.1.6/32 dev ens36",
+	// 	"ip route del 192.168.1.7/32 dev ens36",
+	// 	"ip route del 192.168.1.8/32 dev ens36",
+	// 	"ip route del 192.168.1.9/32 dev ens36",
+	// 	"ip route del 192.168.1.10/32 dev ens36",
+	// 	"ip route del 192.168.1.11/32 dev ens36",
+	// 	"ip route del 192.168.1.12/32 dev ens36",
+	// 	"ip route add 192.168.1.1/32 dev ens36",
+	// 	"ip route add 192.168.1.2/32 dev ens36",
+	// 	"ip route add 192.168.1.3/32 dev ens36",
+	// 	"ip route add 192.168.1.4/32 dev ens36",
+	// 	"ip route add 192.168.1.5/32 dev ens36",
+	// 	"ip route add 192.168.1.6/32 dev ens36",
+	// 	"ip route add 192.168.1.7/32 dev ens36",
+	// 	"ip route add 192.168.1.8/32 dev ens36",
+	// 	"ip route add 192.168.1.9/32 dev ens36",
+	// 	"ip route add 192.168.1.10/32 dev ens36",
+	// 	"ip route add 192.168.1.11/32 dev ens36",
+	// 	"ip route add 192.168.1.12/32 dev ens36",
+	// };
+	int cmd_num = ARRAY_SIZE(input1);
 	struct timeval begin_tv, end_tv, diff_tv;
 	gettimeofday(&begin_tv, NULL);
 	for (int i = 0; i < TEST_TIMES; i++) {
 		for (int j = 0; j < cmd_num; j++) {
-            char * input = input1[j];
+			char *input = input1[j];
 			ip_cmd_helper(input, strlen(input));
 		}
 	}
-    
+
 	gettimeofday(&end_tv, NULL);
 	timersub(&end_tv, &begin_tv, &diff_tv);
-	printf("%ld times: cost %ld.%ld s\n", TEST_TIMES * cmd_num,
-	       diff_tv.tv_sec, diff_tv.tv_usec);
+	printf("%d (%d * %d) times: cost %ld.%ld s\n", TEST_TIMES * cmd_num,
+	       TEST_TIMES, cmd_num, diff_tv.tv_sec, diff_tv.tv_usec);
 	return 0;
 }

@@ -145,7 +145,7 @@ MODDESTDIR := $(DESTDIR)$(LIBDIR)/tc
 
 all: tc $(TCSO) libiprt2_tc.so iprt2_tc_test
 
-tc: $(TCOBJ) $(LIBNETLINK) libtc.a libtc_test.a
+tc: $(TCOBJ) $(LIBNETLINK) libtc.a
 	$(QUIET_LINK)$(CC) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 iprt2_tc_test: iprt2_tc_test.o $(LIBNETLINK) libiprt2_tc.so 

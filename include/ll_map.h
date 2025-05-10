@@ -13,5 +13,6 @@ void ll_drop_by_index(unsigned index);
 unsigned namehash(const char *str);
 
 const char *ll_idx_n2a(unsigned int idx);
+void ll_cleanup(void);
 
 #endif /* __LL_MAP_H__ */

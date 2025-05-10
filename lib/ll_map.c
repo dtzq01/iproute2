@@ -384,6 +384,24 @@ void ll_drop_by_index(unsigned index)
 	free(im);
 }
 
+void ll_cleanup(void)
+{
+    struct hlist_node *n, *next;
+	struct ll_cache *im;
+    // 清理索引哈希表
+    for (int i = 0; i < IDXMAP_SIZE; i++) {
+        hlist_for_each_safe(n, next, &idx_head[i]) {
+            im = container_of(n, struct ll_cache, idx_hash);
+			if (!im)
+				continue;
+			printf("del idx %d name %s\n", im->index, im->name);
+			hlist_del(&im->idx_hash);
+			hlist_del(&im->name_hash);
+			free(im);
+        }
+    }
+}
+
 void ll_init_map(struct rtnl_handle *rth)
 {
 	static int initialized;
